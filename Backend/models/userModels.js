@@ -3,7 +3,7 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-    username: {
+    name: {
         type : String,
         required : true,
     },
@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
             ref:"Course"
         }
     ],
-    photoURL :{
+    photoUrl :{
         type :String,
         default :"",
     },

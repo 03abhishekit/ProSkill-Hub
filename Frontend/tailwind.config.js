@@ -5,8 +5,13 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        creamyWhite: "#f5f5dc", // Example hex code for creamy white
+      },
+    },
   },
+
   plugins: [],
 }
 

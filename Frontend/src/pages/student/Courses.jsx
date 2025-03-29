@@ -1,23 +1,22 @@
+
+
 import React from "react";
 import Course from "./Course";
-// import { useGetPublishedCourseQuery } from "@/features/api/courseApi";
+import { useGetPublishedCourseQuery } from "../../features/api/courseApi";
 
 const Courses = () => {
-  // const { data, isLoading, isError } = useGetPublishedCourseQuery();
-  const isLoading = true;
-  const isError = false;
-  const data = {
-    
+  const { data, isLoading, isError } = useGetPublishedCourseQuery();
+      
+  
+  if (isError){
+    return (
+      <div className="flex justify-center items-center h-[50vh]">
+        <h1 className="text-red-500 font-semibold text-lg">
+          Some error occurred while fetching courses.
+        </h1>
+      </div>
+    );
   }
-
-  // if (isError)
-  //   return (
-  //     <div className="flex justify-center items-center h-[50vh]">
-  //       <h1 className="text-red-500 font-semibold text-lg">
-  //         Some error occurred while fetching courses.
-  //       </h1>
-  //     </div>
-  //   );
 
   return (
     <div className="bg-gray-50 dark:bg-[#141414] py-12">
@@ -27,7 +26,7 @@ const Courses = () => {
         </h2>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-              {isLoading && Array.from({ length: 8 }).map((_, index) => <CourseSkeleton key={index} />)}
+              {isLoading && Array.from({ length: 8 }).map((_, index) => (<CourseSkeleton key={index} />))}
 
               {!isLoading && data?.courses?.length > 0 &&
                 data.courses.map((course, index) => <Course key={index} course={course} />)

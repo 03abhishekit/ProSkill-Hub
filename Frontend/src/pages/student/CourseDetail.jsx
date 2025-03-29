@@ -1,9 +1,10 @@
-import BuyCourseButton from "@/components/BuyCourseButton";
-import { useGetCourseDetailWithStatusQuery } from "@/features/api/purchaseApi";
+import BuyCourseButton from "../../components/BuyCourseButton";
+import { useGetCourseDetailWithStatusQuery } from "../../features/api/purchaseApi";
 import { BadgeInfo, Lock, PlayCircle } from "lucide-react";
 import React from "react";
 import ReactPlayer from "react-player";
 import { useNavigate, useParams } from "react-router-dom";
+
 
 const CourseDetail = () => {
   const params = useParams();
@@ -15,6 +16,8 @@ const CourseDetail = () => {
   if (isError) return <h1 className="text-center text-red-500">Failed to load course details</h1>;
 
   const { course, purchased } = data;
+  console.log(purchased);
+  
 
   const handleContinueCourse = () => {
     if (purchased) {
@@ -28,7 +31,7 @@ const CourseDetail = () => {
         <div className="max-w-7xl mx-auto px-4 md:px-8 flex flex-col gap-2">
           <h1 className="text-3xl font-bold">{course?.courseTitle}</h1>
           <p className="text-lg">Course Sub-title</p>
-          <p>Created By <span className="text-indigo-300 underline italic">{course?.creator.name}</span></p>
+          <p>Created By {" "} <span className="text-indigo-300 underline italic">{course?.creator.name}</span></p>
           <div className="flex items-center gap-2 text-sm">
             <BadgeInfo size={16} />
             <p>Last updated {course?.createdAt.split("T")[0]}</p>
@@ -43,10 +46,11 @@ const CourseDetail = () => {
           <div className="p-4 border rounded-lg shadow-lg">
             <h2 className="text-xl font-semibold">Course Content</h2>
             <p className="text-sm text-gray-600">{course.lectures.length} lectures</p>
+            {/* <p className="text-sm text-gray-600">4 lectures</p> */}
             <div className="mt-3 space-y-2">
               {course.lectures.map((lecture, idx) => (
                 <div key={idx} className="flex items-center gap-3 text-sm p-2 border-b">
-                  <span>{purchased ? <PlayCircle size={16} /> : <Lock size={16} />}</span>
+                  <span>{true ? <PlayCircle size={16} /> : <Lock size={16} />}</span>
                   <p>{lecture.lectureTitle}</p>
                 </div>
               ))}
@@ -56,7 +60,10 @@ const CourseDetail = () => {
         <div className="w-full lg:w-1/3">
           <div className="p-4 border rounded-lg shadow-lg">
             <div className="w-full aspect-video mb-4">
-              <ReactPlayer width="100%" height="100%" url={course.lectures[0].videoUrl} controls />
+              {/* <ReactPlayer width="100%" height={"100%"} url={course?.lectures[0]?.videoUrl} controls={true} /> */}
+              {course?.lectures?.length > 0 && (
+                  <ReactPlayer width="100%" height="100%" url={course.lectures[0].videoUrl} controls={true} />
+                )}
             </div>
             <h1 className="text-lg font-semibold">Lecture title</h1>
             <hr className="my-2" />
@@ -76,3 +83,5 @@ const CourseDetail = () => {
 };
 
 export default CourseDetail;
+
+

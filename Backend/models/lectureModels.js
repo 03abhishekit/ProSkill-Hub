@@ -6,7 +6,7 @@ const lectureSchema = new mongoose.Schema({
     required: true,
   },
   videoUrl: {
-     type: String
+     type: String,
      },
   publicId: { 
     type: String

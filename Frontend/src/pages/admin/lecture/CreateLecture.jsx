@@ -1,10 +1,12 @@
+
+import { useCreateLectureMutation, useGetCourseLectureQuery } from "../../../features/api/courseApi";
+import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Loader2 } from "lucide-react";
 import Lecture from "./Lecture";
-import { useCreateLectureMutation, useGetCourseLectureQuery } from "../../../features/api/courseApi";
+
 
 const CreateLecture = () => {
   const [lectureTitle, setLectureTitle] = useState("");
@@ -16,7 +18,7 @@ const CreateLecture = () => {
     useCreateLectureMutation();
 
   const {
-    data: lectureData,
+    data: lectureData = {},
     isLoading: lectureLoading,
     isError: lectureError,
     refetch,
@@ -26,27 +28,32 @@ const CreateLecture = () => {
     await createLecture({ lectureTitle, courseId });
   };
 
+  
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && data) {
       refetch();
       toast.success(data.message);
     }
     if (error) {
       toast.error(error.data.message);
     }
-  }, [isSuccess, error]);
+  }, [isSuccess, error, data]);
+
+
+  console.log(lectureData);
 
   return (
     <div className="flex-1 mx-10">
       <div className="mb-4">
         <h1 className="font-bold text-2xl text-gray-800">
-          Let's add lectures, add some basic details for your new lecture
+          Create Your Lecture: Share Knowledge, Inspire Minds
         </h1>
         <p className="text-sm text-gray-600">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus,
-          laborum!
+          Provide the essential details for your lecture. Fill out the fields below
+          to make it insightful and engaging for your audience.
         </p>
       </div>
+
       <div className="space-y-6">
         <div>
           <label className="block font-medium text-gray-700">Title</label>

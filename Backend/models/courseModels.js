@@ -9,25 +9,19 @@ const courseSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-
     subTitle: {type:String}, 
-
     description:{ type:String},
-
     category:{
         type:String,
         required:true
     },
-
     courseLevel:{
         type:String,
         enum:["Beginner", "Medium", "Advance"]
     },
-
     coursePrice:{
         type:Number
     },
-    
     courseThumbnail:{
         type:String
     },
@@ -52,11 +46,8 @@ const courseSchema = new mongoose.Schema({
         default:false
     }
 
-}, 
-{
-    timestamps:true
-
-});
+}, {timestamps:true}
+);
 
 
 const Course = mongoose.model("Course", courseSchema);

@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
+import image from "../../assets/image.jpg"
+import { IndianRupee } from "lucide-react"
 const Course = ({ course }) => {
     
   return (
@@ -14,7 +15,7 @@ const Course = ({ course }) => {
             alt="Course Thumbnail"
             className="w-full h-44 object-cover rounded-t-xl"
           />
-          <span className="absolute top-2 right-2 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md">
+           <span className="absolute p-4 m-4 top-2 right-2 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md">
             {course.courseLevel}
           </span>
         </div>
@@ -29,11 +30,17 @@ const Course = ({ course }) => {
 
           {/* Creator Info */}
           <div className="flex items-center gap-3">
-            <img
-              src={course.creator?.photoUrl || "https://via.placeholder.com/40"}
-              alt="Creator"
-              className="w-10 h-10 rounded-full border-2 border-blue-500 shadow-sm"
-            />
+          <div className="flex items-center gap-3">
+                <img
+                  src={course.creator?.photoURL || image}
+                  alt="Creator"
+                  className="w-10 h-10 rounded-full border-2 border-blue-500 shadow-sm"
+                  onError={(e) => {
+                    e.target.src = image; // Use the imported default image if the provided image fails
+                  }}
+                />
+              </div>
+
             <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300">
               {course.creator?.name}
             </h3>
@@ -41,7 +48,8 @@ const Course = ({ course }) => {
 
           {/* Course Price */}
           <div className="text-lg font-bold text-blue-600">
-            ₹{course.coursePrice} 
+          <IndianRupee size={32} />
+            {course.coursePrice} 
           </div>
 
         </div>

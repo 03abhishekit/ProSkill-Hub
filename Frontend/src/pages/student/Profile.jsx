@@ -1,38 +1,22 @@
+import { useLoadUserQuery, useUpdateUserMutation } from "../../features/api/authApi";
 import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import image from "../../assets/image.jpg";
 import Course from "./Course";
 import { Loader2 } from "lucide-react";
-import { useLoadUserQuery, useUpdateUserMutation } from "../../features/api/authApi";
 
 const Profile = () => {
   const [name, setName] = useState("");
   const [profilePhoto, setProfilePhoto] = useState(null);
   const { data, isLoading, refetch } = useLoadUserQuery();
   const [updateUser, { isLoading: updateUserIsLoading, isError, error, isSuccess }] = useUpdateUserMutation();
-  console.log(data);
-
-  useEffect(() => {
-    refetch();
-  }, []);
-
-  useEffect(() => {
-    if (isSuccess) {
-      refetch();
-      toast.success("Profile updated successfully!");
-    }
-    
-    if (isError) {
-        const errorMessage = error?.message || "Failed to update profile due to a server issue.";
-        toast.error(errorMessage);
-    }
-      
-  }, [isSuccess, isError, error]);
 
   const onChangeHandler = (e) => {
     const file = e.target.files?.[0];
-    if (file) setProfilePhoto(file);
+    if (file) {
+      setProfilePhoto(file);
+    }
   };
 
   const updateUserHandler = async () => {
@@ -42,55 +26,79 @@ const Profile = () => {
     await updateUser(formData);
   };
 
-  if (isLoading) return <h1 className="text-center text-lg font-bold">Profile Loading...</h1>;
-  
-  const user = data?.user;
+  useEffect(() => {
+    if (isSuccess) {
+      refetch();
+      toast.success("Profile updated successfully!");
+    }
+
+    if (isError) {
+      const errorMessage = error.message || "Failed to update profile.";
+      toast.error(errorMessage);
+    }
+  }, [isSuccess, isError, error, refetch]);
+
+  if (isLoading) return <h1 className="text-center text-lg font-bold">Loading Profile...</h1>;
+
+  const user = data && data.user;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 my-10">
+    <div className="max-w-5xl mx-auto px-6 my-12">
       <ToastContainer />
-      <h1 className="font-bold text-2xl text-center md:text-left">PROFILE</h1>
-      <div className="flex flex-col md:flex-row items-center md:items-start gap-8 my-5 p-6 border rounded-lg shadow-lg bg-white">
+      <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500 text-center">
+        Profile
+      </h1>
+
+      <div className="mt-10 flex flex-col md:flex-row items-center md:items-start gap-8 p-6 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
         <div className="flex flex-col items-center">
           <img
-            className="h-24 w-24 md:h-32 md:w-32 rounded-full border"
-            src={user?.photoUrl || "https://via.placeholder.com/150"}
+            src={user?.photoUrl || image}
             alt="Profile"
+            className="h-32 w-32 rounded-xl border border-gray-300 dark:border-gray-600 shadow-md"
+            onError={(e) => {
+              e.target.src = image;
+            }}
           />
         </div>
         <div className="w-full">
-          <div className="mb-3">
-            <p className="font-semibold text-gray-900">Name: <span className="font-normal text-gray-700">{user?.name}</span></p>
+          <div className="mb-4">
+            <p className="font-semibold text-gray-900 dark:text-gray-100">
+              Name: <span className="font-normal text-gray-700 dark:text-gray-300">{user?.name}</span>
+            </p>
           </div>
-          <div className="mb-3">
-            <p className="font-semibold text-gray-900">Email: <span className="font-normal text-gray-700">{user?.email}</span></p>
+          <div className="mb-4">
+            <p className="font-semibold text-gray-900 dark:text-gray-100">
+              Email: <span className="font-normal text-gray-700 dark:text-gray-300">{user?.email}</span>
+            </p>
           </div>
-          <div className="mb-3">
-            <p className="font-semibold text-gray-900">Role: <span className="font-normal text-gray-700">{user?.role?.toUpperCase()}</span></p>
+          <div className="mb-4">
+            <p className="font-semibold text-gray-900 dark:text-gray-100">
+              Role: <span className="font-normal text-gray-700 dark:text-gray-300">{user?.role?.toUpperCase()}</span>
+            </p>
           </div>
-          <div className="border-t pt-4">
-            <h2 className="text-lg font-medium">Edit Profile</h2>
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+            <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Edit Profile</h2>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Name"
-              className="w-full p-2 border rounded mt-2"
+              placeholder="Update Name"
+              className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md mt-2 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-200"
             />
             <input
               type="file"
               accept="image/*"
               onChange={onChangeHandler}
-              className="w-full p-2 border rounded mt-2"
+              className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md mt-2 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-200"
             />
             <button
               disabled={updateUserIsLoading}
               onClick={updateUserHandler}
-              className="w-full bg-blue-500 text-white py-2 rounded mt-3 hover:bg-blue-600 transition disabled:bg-gray-400"
+              className="w-full bg-blue-500 text-white py-2 rounded-md mt-3 hover:bg-blue-600 transition disabled:bg-gray-400"
             >
               {updateUserIsLoading ? (
                 <span className="flex justify-center items-center">
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Updating...
                 </span>
               ) : (
                 "Save Changes"
@@ -99,13 +107,16 @@ const Profile = () => {
           </div>
         </div>
       </div>
-      <div>
-        <h1 className="font-medium text-lg">Courses you're enrolled in</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 my-5">
-          {user?.enrolledCourses?.length === 0 ? (
-            <h1>You haven't enrolled yet</h1>
+
+      <div className="mt-10">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Enrolled Courses</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {user?.enrolledCourses.length === 0 ? (
+            <p className="text-center text-lg text-gray-500 dark:text-gray-300">
+              You haven't enrolled in any courses yet.
+            </p>
           ) : (
-            user?.enrolledCourses?.map((course) => <Course course={course} key={course._id} />)
+            user.enrolledCourses.map((course) => <Course key={course._id} course={course} />)
           )}
         </div>
       </div>

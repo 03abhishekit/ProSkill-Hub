@@ -12,8 +12,9 @@ const EditLecture = () => {
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
           <Link to={`/admin/course/${courseId}/lecture`}>
-            <button className="p-2 rounded-full border border-gray-300 hover:bg-gray-100 focus:ring-2 focus:ring-gray-400 transition-all">
-              <ArrowLeft size={16} />
+            <button className="p-2 rounded-full border border-gray-300 hover:bg-gray-100 focus:ring-2 focus:ring-gray-400 transition-all"
+            aria-label="Back to Lectures">
+              <ArrowLeft size={20} />
             </button>
           </Link>
           <h1 className="font-bold text-xl text-gray-800">

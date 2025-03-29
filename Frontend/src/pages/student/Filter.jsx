@@ -30,13 +30,14 @@ const Filter = ({ handleFilterChange }) => {
   };
 
   const selectByPriceHandler = (event) => {
+    event.preventDefault();
     const selectedValue = event.target.value;
     setSortByPrice(selectedValue);
     handleFilterChange(selectedCategories, selectedValue);
   };
 
   return (
-    <div className="w-full md:w-1/5 bg-white p-4 shadow-md rounded-lg">
+    <div className="w-full md:w-2/5 bg-white bg-creamyWhite p-4 shadow-md rounded-lg">
       <div className="flex items-center justify-between">
         <h1 className="font-semibold text-lg md:text-xl">Filter Options</h1>
         <select

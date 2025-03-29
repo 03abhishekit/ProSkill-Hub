@@ -3,6 +3,7 @@ import { useLoginUserMutation, useRegisterUserMutation } from "../features/api/a
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -21,6 +22,9 @@ const Login = () => {
         navigate("/");
       },2000);
     } catch (error) {
+      setTimeout(()=>{
+        navigate("/");
+      },2000);
       toast.error(error?.data?.message || "Login failed!");
     }
   };
@@ -61,7 +65,15 @@ const Login = () => {
               disabled={isLoading}
               className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition flex justify-center items-center"
             >
-              {isLoading ? "Logging in..." : "Login"}
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Logging in...
+                </>
+                )  : 
+                (
+                  "Login"
+                )
+                }
             </button>
           </form>
         </div>
@@ -73,7 +85,7 @@ const Login = () => {
 const Signup = () => {
   const [formData, setFormData] = useState({ username: "", email: "", password: "" });
   const [registerUser, { isLoading }] = useRegisterUserMutation();
-
+  const navigate = useNavigate();
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -82,9 +94,22 @@ const Signup = () => {
     e.preventDefault();
     try {
       await registerUser(formData).unwrap();
-      toast.success("Signup successful!");
+      toast.success("Signup successful! Redirecting to login...");
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
     } catch (error) {
-      toast.error(error?.data?.message || "Signup failed!");
+      const errorMessage = error?.data?.message || "Signup failed!";
+      
+      // Check if the error is due to an already registered email (409 Conflict)
+      if (error?.status === 404) {
+        toast.error("Email already registered! Redirecting to Home...");
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
+      } else {
+        toast.error(errorMessage);
+      }
     }
   };
 
@@ -136,7 +161,18 @@ const Signup = () => {
               disabled={isLoading}
               className="w-full bg-green-600 text-white py-3 rounded-md hover:bg-green-700 transition flex justify-center items-center"
             >
-              {isLoading ? "Signing up..." : "Signup"}
+              {
+              isLoading ? 
+              (
+                <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Signing up...
+                </>
+              )
+              : (
+                "Signup"
+              )
+              }
             </button>
           </form>
         </div>

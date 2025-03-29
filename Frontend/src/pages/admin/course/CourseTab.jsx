@@ -1,12 +1,12 @@
 
-
+import RichTextEditor from "../../../components/RichTextEditor";
+import { useEditCourseMutation, useGetCourseByIdQuery, usePublishCourseMutation } from "../../../features/api/courseApi";
+import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Loader2 } from "lucide-react";
-import RichTextEditor from "../../../components/RichTextEditor";
-import { useEditCourseMutation, useGetCourseByIdQuery } from "../../../features/api/courseApi";
+
 
 
 
@@ -26,37 +26,41 @@ const CourseTab = () => {
   const { data: courseByIdData, isLoading: courseByIdLoading, refetch } =
     useGetCourseByIdQuery(courseId);
 
-  // const [publishCourse] = usePublishCourseMutation();
-  const [previewThumbnail, setPreviewThumbnail] = useState("");
-  const navigate = useNavigate();
-  const [editCourse, { isLoading, isSuccess, error }] = useEditCourseMutation();
-
-  // ... keep all the existing useEffect hooks and handler functions unchanged ...
-
-
-
- 
+  const [publishCourse, {}] = usePublishCourseMutation();
 
   useEffect(() => {
     if (courseByIdData?.course) {
       const course = courseByIdData?.course;
       setInput({
-        courseTitle: course.courseTitle,
-        subTitle: course.subTitle,
-        description: course.description,
-        category: course.category,
-        courseLevel: course.courseLevel,
-        coursePrice: course.coursePrice,
+        courseTitle: course.courseTitle || "",
+        subTitle: course.subTitle || "",
+        description: course.description || "", 
+        category: course.category || "",
+        courseLevel: course.courseLevel || "",
+        coursePrice: course.coursePrice || "",
         courseThumbnail: "",
       });
     }
   }, [courseByIdData]);
+  const [previewThumbnail, setPreviewThumbnail] = useState("");
+  const navigate = useNavigate();
+  const [editCourse, { data, isLoading, isSuccess, error }] = useEditCourseMutation();
 
+  
+  
   const changeEventHandler = (e) => {
     const { name, value } = e.target;
     setInput({ ...input, [name]: value });
   };
 
+  
+  const selectCategory = (e) => {
+    setInput({ ...input, category: e.target.value });
+  };
+  
+  const selectCourseLevel = (e) => {
+    setInput({ ...input, courseLevel: e.target.value });
+  };
   const selectThumbnail = (e) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -69,23 +73,43 @@ const CourseTab = () => {
 
   const updateCourseHandler = async () => {
     const formData = new FormData();
-    Object.keys(input).forEach((key) => formData.append(key, input[key]));
+    formData.append("courseTitle", input.courseTitle);
+    formData.append("subTitle", input.subTitle);
+    formData.append("description", input.description);
+    formData.append("category", input.category);
+    formData.append("courseLevel", input.courseLevel);
+    formData.append("coursePrice", input.coursePrice);
+    formData.append("courseThumbnail", input.courseThumbnail);
+
     await editCourse({ formData, courseId });
   };
+
+  
+  const publishStatusHandler = async (action) => {
+    try {
+      const response = await publishCourse({courseId, query:action});
+      if(response.data){
+        refetch();
+        toast.success(response.data.message);
+      }
+    } catch (error) {
+      toast.error("Failed to publish or unpublish course");
+    }
+  }
 
   useEffect(() => {
     if (isSuccess) {
       toast.success(data.message || "Course updated successfully.");
     }
     if (error) {
-      toast.error(error?.data?.message || "Failed to update course");
+      toast.error(error.data.message || "Failed to update course");
     }
   }, [isSuccess, error]);
 
   if (courseByIdLoading) return <h1 className="text-center text-xl font-semibold">Loading...</h1>;
 
   return (
-    <div className="bg-white rounded-lg border shadow-sm">
+    <div className="bg-gradient-to-br from-white to-gray-100  rounded-lg border shadow-sm">
       <div className="p-6 border-b flex justify-between items-start">
         <div>
           <h2 className="text-2xl font-semibold">Basic Course Information</h2>
@@ -95,9 +119,9 @@ const CourseTab = () => {
         </div>
         <div className="space-x-2">
           <button
-            disabled={courseByIdData?.course.lectures.length === 0}
+            disabled={courseByIdData?.course.lectures.length === 0} variant="outline"
             onClick={() => publishStatusHandler(courseByIdData?.course.isPublished ? "false" : "true")}
-            className="px-4 py-2 border rounded-md text-sm font-medium hover:bg-gray-50 disabled:opacity-50"
+            className="px-4 py-2 m-4 bg-green-600  border rounded-md text-sm font-medium hover:bg-gray-50 disabled:opacity-50"
           >
             {courseByIdData?.course.isPublished ? "Unpublished" : "Publish"}
           </button>
@@ -139,25 +163,34 @@ const CourseTab = () => {
           </div>
 
           <div className="flex gap-6 flex-wrap">
-            <div>
-              <label className="block text-sm font-medium mb-1">Category</label>
-              <select
-                value={input.category}
-                onChange={(e) => selectCategory(e.target.value)}
-                className="w-48 px-3 py-2 border rounded-md bg-white"
-              >
-                <option value="">Select category</option>
-                <option value="Next JS">Next JS</option>
-                <option value="Data Science">Data Science</option>
-                {/* Keep other options same */}
-              </select>
-            </div>
+          <div>
+                <label className="block text-sm font-medium mb-1">Category</label>
+                <select
+                  value={input.category}
+                  onChange={selectCategory}
+                  className="w-48 px-3 py-2 border rounded-md bg-white hover:border-blue-500 focus:border-blue-500 focus:ring focus:ring-blue-300"
+                  required
+                >
+                  <option value="">Select category</option>
+                    <option value="Javascript">Javascript</option>
+                    <option value="Python">Python</option>
+                    <option value="HTML">HTML</option>
+                    <option value="Next JS">Next JS</option>
+                    <option value="Frontend Development">Frontend Development</option>
+                    <option value="Fullstack Development">Fullstack Development</option>
+                    <option value="MERN Stack Development">MERN Stack Development</option>
+                    <option value="Docker">Docker</option>
+                    <option value="MongoDB">MongoDB</option>
+                    <option value="Data Science">Data Science</option>
+                
+                </select>
+              </div>
 
             <div>
               <label className="block text-sm font-medium mb-1">Course Level</label>
               <select
                 value={input.courseLevel}
-                onChange={(e) => selectCourseLevel(e.target.value)}
+                onChange={selectCourseLevel}
                 className="w-48 px-3 py-2 border rounded-md bg-white"
               >
                 <option value="">Select level</option>
@@ -214,7 +247,9 @@ const CourseTab = () => {
                   <Loader2 className="mr-2 h-4 w-4 animate-spin inline" />
                   Saving...
                 </>
-              ) : 'Save'}
+              ) : (
+                'Save'
+              )}
             </button>
           </div>
         </div>

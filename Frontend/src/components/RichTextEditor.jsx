@@ -1,66 +1,44 @@
-import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
-import Underline from '@tiptap/extension-underline'
-import Placeholder from '@tiptap/extension-placeholder'
 
 
+import React from "react";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 
 const RichTextEditor = ({ input, setInput }) => {
+  // Initialize Tiptap editor with StarterKit and content
   const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Underline,
-      Placeholder.configure({
-        placeholder: 'Write your course description...',
-      }),
-    ],
-    content: input.description,
+    extensions: [StarterKit],
+    content: input.description || "", // Initial content
     onUpdate: ({ editor }) => {
-      setInput({ ...input, description: editor.getHTML() })
+        setInput((prev) => ({ ...prev, description: editor.getHTML() })); // Update parent state with editor's HTML content
     },
-  })
+  });
 
   return (
-    <div className="border rounded-lg overflow-hidden">
-      <div className="flex gap-2 p-2 border-b bg-gray-50">
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          className={`px-2 py-1 rounded ${editor?.isActive('bold') ? 'bg-blue-100' : ''}`}
-        >
-          B
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={`px-2 py-1 rounded ${editor?.isActive('italic') ? 'bg-blue-100' : ''}`}
-        >
-          I
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleUnderline().run()}
-          className={`px-2 py-1 rounded ${editor?.isActive('underline') ? 'bg-blue-100' : ''}`}
-        >
-          U
-        </button>
+    <div className="p-6 bg-white dark:bg-gray-800 shadow-xl rounded-lg border border-gray-300 dark:border-gray-700">
+      {/* Label for the Editor */}
+      <label className="block text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">
+        Description
+      </label>
+
+      {/* Editor Content */}
+      <div
+        className="prose dark:prose-dark max-w-none focus:outline-none border border-gray-300 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-900 min-h-[200px] transition-all duration-300 hover:border-blue-500 dark:hover:border-blue-400"
+      >
+        <EditorContent editor={editor} />
       </div>
-      <EditorContent editor={editor} className="p-4 min-h-[200px]" />
+
+      {/* Feedback for editor initialization */}
+      {!editor && (
+        <div className="text-gray-500 text-sm mt-2">
+          Editor is initializing. Please wait...
+        </div>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default RichTextEditor
-// import React, { useState } from 'react';
-// import ReactQuill from 'react-quill';
-// import 'react-quill/dist/quill.snow.css';
+export default RichTextEditor;
 
-// const RichTextEditor = ({input, setInput}) => {
 
-//     const handleChange = (content) => {
-//         setInput({...input, description:content});
-//     }
-   
-//   return <ReactQuill theme="snow" value={input.description} onChange={handleChange} />;
-// }
-// export default RichTextEditor
+

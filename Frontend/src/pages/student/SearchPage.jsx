@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import Filter from "./Filter";
 import SearchResult from "./SearchResult";
-import { useGetSearchCourseQuery } from "@/features/api/courseApi";
+import { useGetSearchCourseQuery } from "../../features/api/courseApi";
 import { Link, useSearchParams } from "react-router-dom";
 import { AlertCircle } from "lucide-react";
+
 
 const SearchPage = () => {
   const [searchParams] = useSearchParams();
