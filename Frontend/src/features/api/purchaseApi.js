@@ -20,7 +20,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 // const COURSE_PURCHASE_API = "http://localhost:8080/api/v1/purchase";
-  const COURSE_PURCHASE_API = "https://proskill-hub-backend.onrender.com";
+  const COURSE_PURCHASE_API = "https://proskill-hub-backend.onrender.com/api/v1/purchase";
 
 export const purchaseApi = createApi({
   reducerPath: "purchaseApi",
