@@ -8,6 +8,10 @@
 # Ignore node modules
 node_modules/
 
-
+# Ignore upload directories
 upload/
 uploads/
+
+# Ignore specific file (Stripe executable)
+stripe.exe
+
