@@ -111,12 +111,12 @@ const Profile = () => {
       <div className="mt-10">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Enrolled Courses</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {user?.enrolledCourses.length === 0 ? (
+          {user?.enrolledCourses?.length === 0 ? (
             <p className="text-center text-lg text-gray-500 dark:text-gray-300">
               You haven't enrolled in any courses yet.
             </p>
           ) : (
-            user.enrolledCourses.map((course) => <Course key={course._id} course={course} />)
+            user?.enrolledCourses.map((course) => <Course key={course._id} course={course} />)
           )}
         </div>
       </div>
