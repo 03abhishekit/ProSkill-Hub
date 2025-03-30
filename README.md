@@ -1,4 +1,4 @@
-# ProSkill Hub - Learning Platform Clone
+# ProSkill Hub - Learning Platform 
 
 ## 📌 Project Overview
 ProSkill Hub is a **full-stack learning platform** built using the **MERN (MongoDB, Express, React, Node.js) stack** with additional features like **Cloudinary for media storage, Stripe for payments, and Redux Toolkit for state management**. This project provides a seamless learning experience, allowing users to browse, enroll in, and watch courses.
