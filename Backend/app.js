@@ -8,7 +8,7 @@ import connectDB from './database/dbConnect.js';
 import { router as userRoute } from './routes/userRoutes.js';
 import { router as courseRoute } from "./routes/courseRoutes.js";
 import { router as mediaRoute } from "./routes/mediaRoutes.js";
-import {router as purchaseRoute } from "./routes/purchaseCourseRoutes.js"
+import {router as purchaseRoute } from "./routes/PurchaseCourseRoutes.js"
 import { router as courseProgressRoute } from "./routes/courseProgressRoutes.js";
 dotenv.config({});
 
@@ -24,7 +24,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(cookieParser());
-// app.use(express.urlencoded({ extended: true })); 
+app.use(express.urlencoded({ extended: true })); 
 
 
 // Middleware
